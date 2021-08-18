@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Listing Users</title>
+	<th:block th:insert="fragments/base :: head"></th:block>
+</head>
+
+<body>
+	<th:block th:insert="fragments/header :: header"></th:block>
+	<div class="container body-container">
+		<h1>Listing Stores</h1>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>name</th>
+					<th>address</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="store:${stores}" th:object="${store}">
+					<td th:text="*{storeName}"></td>
+					<td th:text="*{address}"></td>
+					<td>
+						<a class="btn btn-default btn-xs"
+							th:href="@{/store/show/{id}(id=*{id})}">Show</a>
+					</td>
+					<td>
+						<a class="btn btn-default btn-xs"
+							th:href="@{/store/edit/{id}(id=*{id})}">Edit</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a class="btn btn-outline-dark" th:href="@{/store/new}">New</a>
+	</div>
+	<th:block th:insert="fragments/base :: scripts"></th:block>
+	<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+
+</html>

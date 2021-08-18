@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Store</title>
+	<th:block th:insert="fragments/base :: head"></th:block>
+</head>
+
+<body>
+	<th:block th:insert="fragments/header :: header"></th:block>
+	<div class="container body-container">
+		
+		<form th:action="@{/store/update}" th:method="post" th:object="${storeForm}" enctype="multipart/form-data">
+			<table class="table store-container">
+				<tbody>
+					<tr>
+						<th>id</th>
+						<td>
+							<span th:text="*{id}" >
+							</span>
+							<input type="hidden" name="id" th:value="*{id}"/>
+						</td>
+					</tr>
+					<tr>
+						<th>name</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{storename}" />
+							<span th:if="${#fields.hasErrors('storename')}" th:errors="*{storename}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>address</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{address}" />
+							<span th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>url</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{url}" />
+							<span th:if="${#fields.hasErrors('url')}" th:errors="*{url}"></span>
+						</td>
+					<tr>
+						<th>picture</th>
+							<td>
+								<input type="file" th:field="*{picture}" class="form-control" />
+								<br />
+								<span th:if="${#fields.hasErrors('picture')}"
+									th:errors="*{picture}">
+								</span>
+							</td>
+					</tr>
+					<tr>
+						<th>freespace</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{freespace}" />
+							<span th:if="${#fields.hasErrors('freespace')}" th:errors="*{freespace}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>Influential flag</th>
+						<td>
+							<div th:each="item : *{getEnabledItems()}" class="form-check-inline">
+								<input type="radio" class="form-check-input"
+									th:value="${item.key}" th:text="${item.value}"
+									th:field="*{enabled}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Vegan flag</th>
+						<td>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" th:field="*{vegan}" th:checked="*{vegan}">
+								<label class="form-check-label" for="flexCheckChecked">
+									Vegan
+								</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Organic flag</th>
+						<td>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" th:field="*{organic}" th:checked="*{organic}">
+								<label class="form-check-label" for="flexCheckChecked">
+									Organic
+								</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Caff flag</th>
+						<td>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" th:field="*{caff}" th:checked="*{caff}">
+								<label class="form-check-label" for="flexCheckChecked">
+									Caff
+								</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Restaurnat flag</th>
+						<td>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" th:field="*{restaurnat}" th:checked="*{restaurnat}">
+								<label class="form-check-label" for="flexCheckChecked">
+									Restaurnat
+								</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Goods flag</th>
+						<td>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" th:field="*{goods}" th:checked="*{goods}">
+								<label class="form-check-label" for="flexCheckChecked">
+									Goods
+								</label>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<span class="d-flex justify-content-between">
+								<button type="submit" class="btn btn-outline-dark">OK</button>
+								<a class="btn btn-outline-dark" th:href="@{/store/index}">HOME</a>
+							</span>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+	</div>
+	<th:block th:insert="fragments/base :: scripts"></th:block>
+	<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+</html>

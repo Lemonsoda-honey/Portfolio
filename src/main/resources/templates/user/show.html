@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Show User</title>
+	<th:block th:insert="fragments/base :: head"></th:block>
+</head>
+
+<body>
+	<th:block th:insert="fragments/header :: header"></th:block>
+	<div class="container body-container">
+		<h1>Show User</h1>
+		<table class="table user-container" th:object="${user}">
+			<tbody>
+				<tr>
+					<th>Name</th>
+					<td th:text="*{username}"></td>
+				</tr>
+				<tr>
+					<th>Display Name</th>
+					<td th:text="*{displayName}"></td>
+				</tr>
+
+				<tr>
+					<th>Enable Flag</th>
+					<td>
+						<div th:each="item : ${T(com.example.util.EnabledItems).ENABLEDITEMS}" class="form-check-inline">
+							<input type="radio" class="form-check-input" th:value="${item.key}" th:text="${item.value}"
+								th:checked="${item.key} == *{enabled}" disabled />
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<span class="d-flex justify-content-end">
+							<a class="btn btn-outline-dark" th:href="@{/user/index}">一覧画面へ</a>
+						</span>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<th:block th:insert="fragments/base :: scripts"></th:block>
+	<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+</html>

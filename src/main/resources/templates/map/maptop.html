@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Vegan&Organic</title>
+	<meta charset="utf-8">
+	<style>
+		#map_container {
+			width: 90%;
+			padding: 4px;
+			border: 1px solid #CCC;
+		}
+		#map_canvas {
+			/* 高さ（と幅）を指定しないと地図は表示されない */
+			width: 100%;
+			height: 585px;
+		}
+		#url,
+		#zoom {
+			display: none;
+			/* 非表示 */
+		}
+		/* 情報ウィンドウ（マーカーをクリックすると表示される領域）内 */
+		#map_content {
+			width: 600px;
+			height: 450px;
+		}
+	</style>
+</head>
+<body>
+	<div id="map_info">
+		<p id="zoom">17</p>
+		<div>
+			<h2>検索条件の例</h2>
+			<form th:action="@{/maptop}" th:method="post" th:object="${storeSearchForm}">
+				<table class="table store-container">
+					<tbody>
+						<div id="text">
+							<tr>
+								<th>Vegan flag</th>
+								<td>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" th:field="*{isVegan}"
+											th:checked="*{isVegan}">
+										<label class="form-check-label" for="flexCheckChecked">
+											Vegan
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Organic flag</th>
+								<td>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" th:field="*{isOrganic}"
+											th:checked="*{isOrganic}">
+										<label class="form-check-label" for="flexCheckChecked">
+											Organic
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Cafe flag</th>
+								<td>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" th:field="*{isCaff}"
+											th:checked="*{isCaff}">
+										<label class="form-check-label" for="flexCheckChecked">
+											Cafe
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Restaurant flag</th>
+								<td>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" th:field="*{isRestaurnat}"
+											th:checked="*{isRestaurnat}">
+										<label class="form-check-label" for="flexCheckChecked">
+											Restaurant
+										</label>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Goods flag</th>
+								<td>
+									<div class="form-check">
+										<input type="checkbox" class="form-check-input" th:field="*{isGoods}"
+											th:checked="*{isGoods}">
+										<label class="form-check-label" for="flexCheckChecked">
+											Goods
+										</label>
+									</div>
+								</td>
+							</tr>
+					</tbody>
+				</table>
+				<button type="submit" class="btn btn-outline-dark">Search</button>
+			</form>
+			<h2>検索結果の表示例</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>name</th>
+						<th>address</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="store:${storeViewModels}" th:object="${store}">
+						<td><a herf="#" th:attr="onclick='initMap(' + *{id} + ');'"><span th:text="*{id}"></span></a>
+						</td>
+						<td th:text="*{storeName}"></td>
+						<td th:text="*{address}"></td>
+						</a>
+					</tr>
+		</div>
+		</tbody>
+		</table>
+	</div>
+	</div>
+	<div id="map_container">
+		<div id="map_canvas"></div>
+	</div>
+	<!-- jQuery の読み込み -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		function initMap(id) {
+			if (id == undefined) {
+				return;
+			}
+			var data = {};
+			var url = "/store-rest-api/detail/" + id;
+			// お店の詳細情報を取得
+			$.getJSON(url, (data) => {
+				// JSONデータを受信した後に実行する処理
+				var map, map_center;
+				//初期のズーム レベル（指定がなければ 16）
+				var zoom = $("#zoom").text() ? parseInt($("#zoom").text()) : 16;
+				//マーカーのタイトル
+				var title = $('#venue').text();
+				//マップ生成のオプション
+				//center は Geolocation から取得して後で設定
+				var opts = {
+					zoom: zoom,
+					mapTypeId: "roadmap"  //初期マップ タイプ
+				};
+				//マップのインスタンスを生成
+				map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+				//ジオコーディングのインスタンスの生成
+				var geocoder = new google.maps.Geocoder();
+				var address = data.address;
+				var my_reg = /〒\s?\d{3}(-|ー)\d{4}/;
+				//郵便番号を含めるとおかしくなる場合があったので、郵便番号は削除
+				address = address.replace(my_reg, '');
+				//geocoder.geocode() にアドレスを渡して、コールバック関数を記述して処理
+				geocoder.geocode({'address': address}, function (results, status) {
+					if (status === 'OK' && results[0]) {
+						//results[0].geometry.location に緯度・経度のオブジェクトが入っている
+						map_center = results[0].geometry.location;
+						//地図の中心位置を設定
+						map.setCenter(map_center);
+						//マーカーのインスタンスを生成
+						var marker = new google.maps.Marker({
+							//マーカーを配置する Map オブジェクトを指定
+							map: map,
+							//マーカーの初期の場所を示す LatLng を指定
+							position: map_center,
+							//マーカーをアニメーションで表示
+							animation: google.maps.Animation.DROP,
+							title: title
+						});
+						//情報ウィンドウに表示するコンテンツを作成
+						//urlが指定してあればリンクつきのタイトルと住所を表示（URLがない場合もあるため）
+						var content;
+						var name = data.storeName;
+						address = data.address;
+						var url = data.url;
+						var pictureUrl = data.pictureUrl;
+						var freespace = data.freespace;
+						if (url) {
+							content = '<div id="map_content"><p>' + name + '<br />' + '<a href="' + url + '" target="_blank">OFFICIAL SITE</a>' + '<br />' + address + '<br />' + '<img src="' + pictureUrl + '" loading="lazy">' + freespace + '</div>';
+						}
+						//情報ウィンドウのインスタンスを生成
+						var infowindow = new google.maps.InfoWindow({
+							content: content,
+						});
+						//marker をクリックすると情報ウィンドウを表示(リスナーの登録）
+						google.maps.event.addListener(marker, 'click', function () {
+							//第2引数にマーカーを指定して紐付け
+							infowindow.open(map, marker);
+						});
+					} else {
+						alert("住所から位置の取得ができませんでした。: " + status);
+					}
+				});
+			});
+		}
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=your_key&callback=initMap"
+		async defer></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Editing User</title>
+	<th:block th:insert="fragments/base :: head"></th:block>
+</head>
+
+<body>
+	<th:block th:insert="fragments/header :: header"></th:block>
+	<div class="container body-container">
+		<h1>Editing User</h1>
+		<form th:action="@{/user/update}" th:method="post" th:object="${userUpdateForm}">
+			<table class="table user-container">
+				<tbody>
+					<tr>
+						<th>NAME</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{username}" readonly/>
+							<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>Display Name</th>
+						<td>
+							<input type="text" class="form-control" th:field="*{displayName}" />
+							<span th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>PASSWORD</th>
+						<td>
+							<input type="password" class="form-control" th:field="*{password}" />
+							<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+						</td>
+					</tr>
+
+					<tr>
+						<th>Influential flag</th>
+						<td>
+							<div th:each="item : *{getEnabledItems()}" class="form-check-inline">
+								<input type="radio" class="form-check-input"
+									th:value="${item.key}" th:text="${item.value}"
+									th:field="*{enabled}" />
+							</div>
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<span class="d-flex justify-content-between">
+								<button type="submit" class="btn btn-outline-dark">SAVE</button>
+								<a class="btn btn-outline-dark" th:href="@{/user/index}">Index</a>
+							</span>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+	</div>
+	<th:block th:insert="fragments/base :: scripts"></th:block>
+	<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Show Store</title>
+	<th:block th:insert="fragments/base :: head"></th:block>
+</head>
+
+<body>
+	<th:block th:insert="fragments/header :: header"></th:block>
+	<div class="container body-container">
+		<h1>Show Store</h1>
+		<table class="table user-container" th:object="${store}">
+			<tbody>
+				<tr>
+					<th>name</th>
+					<td th:text="*{storename}"></td>
+				</tr>
+				<tr>
+					<th>address</th>
+					<td th:text="*{address}"></td>
+				</tr>
+				<tr>
+					<th>url</th>
+					<td th:text="*{url}"></td>
+				</tr>
+				<tr>
+					<th>picture</th>
+					<td>
+						<span th:if="${pictureFlag}">
+							<img th:src="@{/store/image/{id}(id=*{id})}"
+								loading="lazy">
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th>freespace</th>
+					<td th:text="*{freespace}"></td>
+				</tr>
+				<tr>
+					<th>Influential flag</th>
+					<td>
+						<div th:each="item : ${T(com.example.util.EnabledItems).ENABLEDITEMS}" class="form-check-inline">
+							<input type="radio" class="form-check-input" th:value="${item.key}" th:text="${item.value}"
+								th:field="*{enabled}" disabled>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Vegan flag</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" th:field="*{vegan}" th:checked="*{vegan}" disabled>
+							<label class="form-check-label" for="flexCheckChecked">
+								Vegan
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Organic flag</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" th:field="*{organic}" th:checked="*{organic}" disabled>
+							<label class="form-check-label" for="flexCheckChecked">
+								Organic
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Cafe flag</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" th:field="*{caff}" th:checked="*{caff}" disabled>
+							<label class="form-check-label" for="flexCheckChecked">
+								Cafe
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Restaurnat flag</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" th:field="*{restaurnat}" th:checked="*{restaurnat}" disabled>
+							<label class="form-check-label" for="flexCheckChecked">
+								Restaurnat
+							</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Goods flag</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input" th:field="*{goods}" th:checked="*{goods}" disabled>
+							<label class="form-check-label" for="flexCheckChecked" >
+								Goods
+							</label>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<span class="d-flex justify-content-end">
+							<a class="btn btn-outline-dark" th:href="@{/store/index}">LIST</a>
+						</span>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<th:block th:insert="fragments/base :: scripts"></th:block>
+	<th:block th:insert="fragments/footer :: footer"></th:block>
+</body>
+
+</html>
